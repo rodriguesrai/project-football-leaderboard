@@ -1,2 +1,12 @@
-// import TeamsModelSequelize from '../database/models/TeamsModelSequelize';
-// import { ITeam } from '../interfaces/ITeam';
+import { ITeam } from '../Interfaces/Teams/ITeam';
+import ITeamModel from '../Interfaces/Teams/ITeamModel';
+import TeamsModelSequelize from '../database/models/TeamsModelSequelize';
+
+export default class TeamsModel implements ITeamModel {
+  private model = TeamsModelSequelize;
+
+  async findAll(): Promise<ITeam[]> {
+    const dbResponse = await this.model.findAll();
+    return dbResponse;
+  }
+}
