@@ -24,14 +24,14 @@ describe('Rota /teams', () => {
       expect(response.status).to.be.eq(200);
       expect(response.body).to.be.deep.eq(teamsMock);
      })
-    //  it('testa retorno de /id com os times corretos', async () => { 
-    //   sinon.stub(TeamsModel.prototype, 'findById').resolves(teamIdMock);
+     it('testa retorno de /id com os times corretos', async () => { 
+      sinon.stub(TeamsModel.prototype, 'findById').resolves(teamIdMock);
 
-    //   const response = await chai.request(app).get('/teams/5');
+      const response = await chai.request(app).get('/teams/5');
 
-    //   expect(response.status).to.be.eq(200);
-    //   expect(response.body).to.be.deep.eq(teamIdMock);
-    //   })
+      expect(response.status).to.be.eq(200);
+      expect(response.body).to.be.deep.eq(teamIdMock);
+      })
    })
 
 });

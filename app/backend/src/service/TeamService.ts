@@ -12,4 +12,9 @@ export default class TeamService {
     const modelResponse = await this.teamModel.findAll();
     return { status: 'SUCCESSFUL', data: modelResponse };
   }
+
+  public async findById(id: ITeam['id']): Promise<ServiceResponse<ITeam | null>> {
+    const modelResponse = await this.teamModel.findById(id);
+    return { status: 'SUCCESSFUL', data: modelResponse };
+  }
 }
