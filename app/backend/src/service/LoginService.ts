@@ -9,14 +9,15 @@ export default class LoginService {
 
   async login(email: string, password: string): Promise<ServiceResponse<Token | null>> {
     const modelResponse = await this.model.findByEmail(email);
+    console.log(modelResponse);
 
     if (!modelResponse) {
-      return { status: 'UNAUTHORIZED', data: { message: 'Username or password invalid' } };
+      return { status: 'UNAUTHORIZED', data: { message: 'Invalid email or password' } };
     }
 
     const isPasswordValid = await bcrypt.compare(password, modelResponse.password);
     if (!isPasswordValid) {
-      return { status: 'UNAUTHORIZED', data: { message: 'Username or password invalid' } };
+      return { status: 'UNAUTHORIZED', data: { message: 'Invalid email or password' } };
     }
     const payload = { id: modelResponse.id, email: modelResponse.email, role: modelResponse.role };
     const token = await verifyGenerateToken.sign(payload);
