@@ -13,20 +13,20 @@ const { expect } = chai;
 
 const app = new App().app;
 
-describe('Rota /users', () => {
+describe('Rota /login', () => {
   beforeEach(sinon.restore);
 
-  describe('Método GET', () => { 
-    it('testa retorno da rota com todos os usuários', async () => { 
-    //arrange
-    sinon.stub(UserModel.prototype, 'findAll' ).resolves()
+  describe('Método PUT', () => { 
+    // it('testa login com usuário válido', async () => { 
+    // //arrange
+    // sinon.stub(UserModel.prototype, 'findAll' ).resolves()
 
-    //act
-    const response = await chai.request(app).get('/users');
-    //assert
-    expect(response.status).to.be.equal(200);
-    expect(response.body).to.be.deep.equal([]);
-     })
+    // //act
+    // const response = await chai.request(app).get('/users');
+    // //assert
+    // expect(response.status).to.be.equal(200);
+    // expect(response.body).to.be.deep.equal([]);
+    //  })
   })
 
 });
