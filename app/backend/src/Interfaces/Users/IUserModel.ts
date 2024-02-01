@@ -1,5 +1,5 @@
 import { IUser } from './IUsers';
 
 export default interface IUserModel {
-  findAll(): Promise<IUser[]>
+  findByEmail(email: string): Promise<IUser | null>
 }
