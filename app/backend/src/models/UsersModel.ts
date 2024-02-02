@@ -16,6 +16,7 @@ export default class UserModel implements IUserModel {
 
   async findById(id: number): Promise<IUser | null> {
     const dbResponse = await this.model.findByPk(id);
+
     return dbResponse;
   }
 }

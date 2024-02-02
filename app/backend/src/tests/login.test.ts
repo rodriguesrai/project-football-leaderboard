@@ -15,6 +15,7 @@ import {
    emailNotInDatabaseBody,
    passwordNotInDatabaseBody
 } from './mocks/login.mock';
+import verifyGenerateToken from '../utils/verifyGenerateToken';
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -58,7 +59,7 @@ describe('Rota /login', () => {
 
       sinon.stub(UserModel.prototype, 'findByEmail' ).resolves(null)
 
-      const response = await (await chai.request(app).post('/login').send(emailNotInDatabaseBody))
+      const response = (await chai.request(app).post('/login').send(emailNotInDatabaseBody))
 
       expect(response.status).to.be.equal(401);
       expect(response.body.message).to.be.deep.equal('Invalid email or password');
@@ -67,10 +68,40 @@ describe('Rota /login', () => {
 
       sinon.stub(UserModel.prototype, 'findByEmail' ).resolves(loginData)
 
-      const response = await (await chai.request(app).post('/login').send(passwordNotInDatabaseBody))
+      const response = (await chai.request(app).post('/login').send(passwordNotInDatabaseBody))
 
       expect(response.status).to.be.equal(401);
       expect(response.body.message).to.be.deep.equal('Invalid email or password');
     });
+  describe('Método GET', () => { 
+    it('testa retorno do enpoint /login/role', async () => { 
+
+      sinon.stub(UserModel.prototype, 'findById' ).resolves(loginData)
+
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+      const response = await chai.request(app)
+        .get('/login/role')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send(userValidBody);
+
+      expect(response.status).to.be.equal(200);
+      expect(response.body).to.have.property('role');
+
+     })
+     it('testa retorno do enpoint /login/role com id inválido', async () => { 
+
+      sinon.stub(UserModel.prototype, 'findById' ).resolves(null)
+
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+      const response = await chai.request(app)
+        .get('/login/role')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send(userValidBody);
+
+      expect(response.status).to.be.equal(200);
+      expect(response.body).to.have.property('role');
+
+     })
+    })
   });
 });

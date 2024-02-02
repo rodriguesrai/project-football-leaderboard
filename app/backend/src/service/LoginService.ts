@@ -27,6 +27,7 @@ export default class LoginService {
   public async getUserRole(userId: number):
   Promise<ServiceResponse<UserRole | undefined>> {
     const user = await this.model.findById(userId);
+
     if (user) {
       return { status: 'SUCCESSFUL', data: { role: user.role } };
     }
