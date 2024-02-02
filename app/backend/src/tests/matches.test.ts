@@ -58,6 +58,19 @@ describe('Rota /matches', () => {
       expect(response.status).to.be.eq(200);
       expect(response.body).to.be.deep.eq({ message: 'Finished' });
     })
+    it('testa rota de atualizar partidas em andamento', async () => { 
+      sinon.stub(MatchesModel.prototype, 'finishMatch').resolves(0);
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+      
+      const response = await chai
+      .request(app)
+      .patch('/matches/41')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ homeTeamGoals: 1, awayTeamGoals: 1 });
+      
+      expect(response.status).to.be.eq(200);
+      expect(response.body).to.be.deep.eq({ message: 'Updated' });
+    })
    })
   })
 });

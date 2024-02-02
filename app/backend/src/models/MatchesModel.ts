@@ -1,3 +1,4 @@
+import { UpdateMatchParams } from '../types/UpdateMatchParams';
 import TeamsModelSequelize from '../database/models/TeamsModelSequelize';
 import { IMatches } from '../Interfaces/Matches/IMatches';
 import IMatchesModel from '../Interfaces/Matches/IMatchesModel';
@@ -29,6 +30,15 @@ export default class MatchesModel implements IMatchesModel {
 
   public async finishMatch(id: number): Promise<number> {
     const [dbResponse] = await this.model.update({ inProgress: false }, { where: { id } });
+
+    return dbResponse;
+  }
+
+  public async updateMatch({ id, awayTeamGoals, homeTeamGoals }:
+  UpdateMatchParams): Promise<number> {
+    const [dbResponse] = await this.model.update({ awayTeamGoals, homeTeamGoals }, {
+      where: { id },
+    });
 
     return dbResponse;
   }
