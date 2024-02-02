@@ -16,4 +16,16 @@ export default class MatchesService {
 
     return { status: 'SUCCESSFUL', data: modelResponse };
   }
+
+  public async finishMatch(id: number): Promise<ServiceResponse<object>> {
+    // const existsMatch = await this.model.findById(id);
+    // console.log(existsMatch, 'existsMatch no service');
+
+    // if (!existsMatch) {
+    //   return { status: 'NOT_FOUND', data: { message: 'Match not found' } };
+    // }
+
+    await this.model.finishMatch(id);
+    return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
+  }
 }
