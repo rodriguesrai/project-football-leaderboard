@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import * as bcrypt from 'bcryptjs';
+
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
@@ -11,6 +11,7 @@ matchesData,
 matchesInProgressData,
 matchesnotInProgressData
 } from './mocks/matches.mock';
+import verifyGenerateToken from '../utils/verifyGenerateToken';
 
 
 chai.use(chaiHttp);
@@ -47,5 +48,16 @@ describe('Rota /matches', () => {
     expect(response.status).to.be.eq(200);
     expect(response.body).to.be.deep.eq(matchesnotInProgressData);
   })
+  describe('Método PATCH', () => { 
+    it('testa retorno da rota de finalização de partida', async () => { 
+      sinon.stub(MatchesModel.prototype, 'finishMatch').resolves(0);
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+      
+      const response = await chai.request(app).patch('/matches/41/finish').set('Authorization', `Bearer ${testToken}`);
+      
+      expect(response.status).to.be.eq(200);
+      expect(response.body).to.be.deep.eq({ message: 'Finished' });
+    })
+   })
   })
 });

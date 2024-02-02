@@ -8,7 +8,6 @@ const routerMatches = Router();
 
 routerMatches.get('/', (req, res) => matchesController.getAllMatches(req, res));
 
-// routerMatches.use(authMiddleware);
 routerMatches.patch(
   '/:id/finish',
   authMiddleware,
