@@ -14,4 +14,9 @@ export default class TeamsModel implements ITeamModel {
     const dbResponse = await this.model.findByPk(id);
     return dbResponse;
   }
+
+  public async checkTeamExists(id: number): Promise<boolean> {
+    const dbResponse = await this.model.findByPk(id);
+    return !!dbResponse;
+  }
 }

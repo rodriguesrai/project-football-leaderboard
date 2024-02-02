@@ -88,5 +88,31 @@ describe('Rota /matches', () => {
       expect(response.status).to.be.eq(201);
       expect(response.body).to.be.deep.eq(matchCreatedDbResponse);
     })
+    it('testa o retorno da rota ao cadastrar uma nova partida em andamento com times iguais', async () => { 
+
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+
+      const response = await chai
+      .request(app)
+      .post('/matches')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ homeTeamId: 16, awayTeamId: 16, homeTeamGoals: 2, awayTeamGoals: 2 });
+
+      expect(response.status).to.be.eq(422);
+      expect(response.body).to.be.deep.eq({ message: 'It is not possible to create a match with two equal teams' });
+    })
+    it('testa o retorno da rota ao cadastrar uma nova partida em andamento com times inexistentes', async () => { 
+
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+
+      const response = await chai
+      .request(app)
+      .post('/matches')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ homeTeamId: 999, awayTeamId: 998, homeTeamGoals: 2, awayTeamGoals: 2 });
+
+      expect(response.status).to.be.eq(404);
+      expect(response.body).to.be.deep.eq({ message: 'There is no team with such id!' });
+    })
    })
 });
