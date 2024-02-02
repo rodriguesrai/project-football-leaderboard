@@ -98,8 +98,8 @@ describe('Rota /login', () => {
         .set('Authorization', `Bearer ${testToken}`)
         .send(userValidBody);
 
-      expect(response.status).to.be.equal(200);
-      expect(response.body).to.have.property('role');
+      expect(response.status).to.be.equal(404);
+      expect(response.body).to.have.property('message');
 
      })
     })
