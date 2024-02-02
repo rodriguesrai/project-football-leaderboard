@@ -20,4 +20,10 @@ routerMatches.patch(
   (req, res) => matchesController.updateMatch(req, res),
 );
 
+routerMatches.post(
+  '/',
+  authMiddleware,
+  (req, res) => matchesController.createMatch(req, res),
+);
+
 export default routerMatches;

@@ -9,7 +9,8 @@ import MatchesModel from '../models/MatchesModel';
 import { 
 matchesData,
 matchesInProgressData,
-matchesnotInProgressData
+matchesnotInProgressData,
+matchCreatedDbResponse
 } from './mocks/matches.mock';
 import verifyGenerateToken from '../utils/verifyGenerateToken';
 
@@ -48,6 +49,7 @@ describe('Rota /matches', () => {
     expect(response.status).to.be.eq(200);
     expect(response.body).to.be.deep.eq(matchesnotInProgressData);
   })
+  })
   describe('Método PATCH', () => { 
     it('testa retorno da rota de finalização de partida', async () => { 
       sinon.stub(MatchesModel.prototype, 'finishMatch').resolves(0);
@@ -72,5 +74,19 @@ describe('Rota /matches', () => {
       expect(response.body).to.be.deep.eq({ message: 'Updated' });
     })
    })
-  })
+  describe('Método POST', () => { 
+    it('testa o retorno da rota ao cadastrar uma nova partida em andamento', async () => { 
+      sinon.stub(MatchesModel.prototype, 'createMatch').resolves(matchCreatedDbResponse);
+      const testToken = await verifyGenerateToken.sign({ id: 1, email: 'admin@admin.com', role: 'admin' });
+
+      const response = await chai
+      .request(app)
+      .post('/matches')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ homeTeamId: 16, awayTeamId: 8, homeTeamGoals: 2, awayTeamGoals: 2 });
+
+      expect(response.status).to.be.eq(201);
+      expect(response.body).to.be.deep.eq(matchCreatedDbResponse);
+    })
+   })
 });

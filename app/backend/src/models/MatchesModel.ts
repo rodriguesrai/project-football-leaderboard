@@ -1,3 +1,4 @@
+import { boolean } from 'joi';
 import { UpdateMatchParams } from '../types/UpdateMatchParams';
 import TeamsModelSequelize from '../database/models/TeamsModelSequelize';
 import { IMatches } from '../Interfaces/Matches/IMatches';
@@ -40,6 +41,15 @@ export default class MatchesModel implements IMatchesModel {
       where: { id },
     });
 
+    return dbResponse;
+  }
+
+  public async createMatch({
+    homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals,
+  }: IMatches): Promise<IMatches> {
+    const dbResponse = await this.model.create({
+      homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals, inProgress: true,
+    });
     return dbResponse;
   }
 }
