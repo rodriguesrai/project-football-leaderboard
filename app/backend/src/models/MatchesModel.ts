@@ -1,4 +1,3 @@
-import { boolean } from 'joi';
 import { UpdateMatchParams } from '../types/UpdateMatchParams';
 import TeamsModelSequelize from '../database/models/TeamsModelSequelize';
 import { IMatches } from '../Interfaces/Matches/IMatches';
