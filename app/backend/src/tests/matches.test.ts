@@ -8,6 +8,8 @@ import { App } from '../app';
 import MatchesModel from '../models/MatchesModel';
 import { 
 matchesData,
+matchesInProgressData,
+matchesnotInProgressData
 } from './mocks/matches.mock';
 
 
@@ -18,7 +20,7 @@ const app = new App().app;
 
 describe('Rota /matches', () => {
   beforeEach(sinon.restore);
-  describe('testa retorno da rota com todas as partidas', () => { 
+  describe('Método GET', () => { 
     it('testa retorno da rota com todas as partidas', async () => { 
       sinon.stub(MatchesModel.prototype, 'findAll').resolves(matchesData);
       
@@ -26,5 +28,24 @@ describe('Rota /matches', () => {
       
       expect(response.status).to.be.eq(200);
       expect(response.body).to.be.deep.eq(matchesData);
-  })})
+  })
+
+  it('testa retorno da rota com todas as partidas em andamento', async () => { 
+    sinon.stub(MatchesModel.prototype, 'getAllMatchesInProgressOrNot').resolves(matchesInProgressData);
+    
+    const response = await chai.request(app).get('/matches?inProgress=true');
+    
+    expect(response.status).to.be.eq(200);
+    expect(response.body).to.be.deep.eq(matchesInProgressData);
+  })
+
+  it('testa retorno da rota com todas as partidas finalizadas', async () => { 
+    sinon.stub(MatchesModel.prototype, 'getAllMatchesInProgressOrNot').resolves(matchesnotInProgressData);
+    
+    const response = await chai.request(app).get('/matches?inProgress=false');
+    
+    expect(response.status).to.be.eq(200);
+    expect(response.body).to.be.deep.eq(matchesnotInProgressData);
+  })
+  })
 });

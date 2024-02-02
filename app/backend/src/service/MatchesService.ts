@@ -9,4 +9,11 @@ export default class MatchesService {
     const modelResponse = await this.model.findAll();
     return { status: 'SUCCESSFUL', data: modelResponse };
   }
+
+  public async getAllMatchesInProgressOrNot(inProgress: string):
+  Promise<ServiceResponse<IMatches[]>> {
+    const modelResponse = await this.model.getAllMatchesInProgressOrNot(inProgress);
+
+    return { status: 'SUCCESSFUL', data: modelResponse };
+  }
 }
