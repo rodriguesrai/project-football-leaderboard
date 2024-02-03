@@ -31,13 +31,14 @@ export default class LeaderboardService {
     return { status: 'SUCCESSFUL', data: leaderBoardAwayData };
   }
 
-  // public async getLeaderboard() {
-  //   const homeLeaderboard = await this.getLeaderboardHome();
-  //   const awayLeaderboard = await this.getLeaderboardAway();
+  public async getLeaderboard():
+  Promise<ServiceResponse<ILeaderboardHome[]>> {
+    const finishedMatches = await this.matchesModel
+      .getAllMatchesInProgressOrNot('false') as IMatchesWithName[];
+    const teamsData = await this.teamsModel.findAll();
 
-  //   const combinedLeaderboard = LeaderboardUtils
-  //     .combineLeaderboards(homeLeaderboard, awayLeaderboard);
-
-  //   return { status: 'SUCCESSFUL', data: combinedLeaderboard };
-  // }
+    const leaderBoardAllData = LeaderboardUtils
+      .calcTeamBoard(finishedMatches, teamsData, undefined);
+    return { status: 'SUCCESSFUL', data: leaderBoardAllData };
+  }
 }
