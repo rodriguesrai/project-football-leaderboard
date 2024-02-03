@@ -1,4 +1,4 @@
-import LeaderboardUtils, { Location } from '../utils/leaderboardUtils';
+import LeaderboardUtils from '../utils/leaderboardUtils';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import TeamsModel from '../models/TeamsModel';
 import MatchesModel from '../models/MatchesModel';
@@ -30,4 +30,14 @@ export default class LeaderboardService {
       .calcTeamBoard(finishedMatches, teamsData, 'away');
     return { status: 'SUCCESSFUL', data: leaderBoardAwayData };
   }
+
+  // public async getLeaderboard() {
+  //   const homeLeaderboard = await this.getLeaderboardHome();
+  //   const awayLeaderboard = await this.getLeaderboardAway();
+
+  //   const combinedLeaderboard = LeaderboardUtils
+  //     .combineLeaderboards(homeLeaderboard, awayLeaderboard);
+
+  //   return { status: 'SUCCESSFUL', data: combinedLeaderboard };
+  // }
 }

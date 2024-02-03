@@ -7,29 +7,74 @@ import { ITeam } from '../Interfaces/Teams/ITeam';
 export type Location = 'away' | 'home';
 
 export default class LeaderboardUtils {
-  private static calcGames(teamId: number, matches: IMatches[], awayOrHome: Location) {
-    const filteredMatches = matches.filter(
-      (match) => (awayOrHome === 'home'
-        ? match.homeTeamId === teamId : match.awayTeamId === teamId),
-    );
+  private static calcTotalMatches(teamId: number, matches: IMatches[], location: Location) {
+    const totalMatches = matches.filter((match) => {
+      switch (location) {
+        case 'home':
+          return match.homeTeamId === teamId;
+        case 'away':
+          return match.awayTeamId === teamId;
+        default:
+          return match.homeTeamId === teamId || match.awayTeamId === teamId;
+      }
+    });
+
+    return totalMatches;
+  }
+
+  private static calcGamesResults(teamId: number, matches: IMatches[], awayOrHome: Location) {
+    const filteredMatches = LeaderboardUtils.calcTotalMatches(teamId, matches, awayOrHome);
 
     const results = filteredMatches.reduce((acc, match) => {
-      const isHome = match.homeTeamId === teamId;
+      const isHome = awayOrHome === 'home';
 
       acc.totalVictories += (isHome && match.homeTeamGoals > match.awayTeamGoals)
-      || (!isHome && match.awayTeamGoals > match.homeTeamGoals) ? 1 : 0;
+            || (!isHome && match.awayTeamGoals > match.homeTeamGoals) ? 1 : 0;
       acc.totalDraws += (match.homeTeamGoals === match.awayTeamGoals) ? 1 : 0;
       acc.totalLosses += (isHome && match.homeTeamGoals < match.awayTeamGoals)
-      || (!isHome && match.awayTeamGoals < match.homeTeamGoals) ? 1 : 0;
+            || (!isHome && match.awayTeamGoals < match.homeTeamGoals) ? 1 : 0;
       return acc;
     }, { totalVictories: 0, totalDraws: 0, totalLosses: 0 });
 
-    const totalGames = results.totalVictories + results.totalDraws + results.totalLosses;
-
     return {
-      totalGames,
       ...results,
     };
+  }
+
+  private static calcTotalDraws(teamId: number, matches: IMatches[], location: Location) {
+    const filteredMatches = LeaderboardUtils.calcTotalMatches(teamId, matches, location);
+
+    return filteredMatches.reduce(
+      (totalDraws, match) =>
+        ((match.homeTeamGoals === match.awayTeamGoals) ? totalDraws + 1 : totalDraws),
+      0,
+    );
+  }
+
+  private static calcTotalVictories(teamId: number, matches: IMatches[], location: Location) {
+    const filteredMatches = LeaderboardUtils.calcTotalMatches(teamId, matches, location);
+
+    return filteredMatches.reduce(
+      (totalVictories, match) =>
+        (((match.homeTeamId === teamId && match.homeTeamGoals > match.awayTeamGoals)
+         || (match.awayTeamId === teamId && match.awayTeamGoals > match.homeTeamGoals))
+          ? totalVictories + 1
+          : totalVictories),
+      0,
+    );
+  }
+
+  private static calcTotalLosses(teamId: number, matches: IMatches[], location: Location) {
+    const filteredMatches = LeaderboardUtils.calcTotalMatches(teamId, matches, location);
+
+    return filteredMatches.reduce(
+      (totalLosses, match) =>
+        (((match.homeTeamId === teamId && match.homeTeamGoals < match.awayTeamGoals)
+         || (match.awayTeamId === teamId && match.awayTeamGoals < match.homeTeamGoals))
+          ? totalLosses + 1
+          : totalLosses),
+      0,
+    );
   }
 
   private static calcTotalPoints(totalVictories: number, totalDraws: number):
@@ -43,11 +88,19 @@ export default class LeaderboardUtils {
 
   private static calcGoalsFavor(teamId: number, matches: IMatches[], location: Location): number {
     return matches.reduce((sum, match) => {
-      if (location === 'home' && match.homeTeamId === teamId) {
-        return sum + match.homeTeamGoals;
-      }
-      if (location === 'away' && match.awayTeamId === teamId) {
-        return sum + match.awayTeamGoals;
+      switch (location) {
+        case 'home':
+          if (match.homeTeamId === teamId) {
+            return sum + match.homeTeamGoals;
+          }
+          break;
+        case 'away':
+          if (match.awayTeamId === teamId) {
+            return sum + match.awayTeamGoals;
+          }
+          break;
+        default:
+          return sum + match.homeTeamGoals + match.awayTeamGoals;
       }
       return sum;
     }, 0);
@@ -55,11 +108,19 @@ export default class LeaderboardUtils {
 
   private static calcGoalsOwn(teamId: number, matches: IMatches[], location: Location): number {
     return matches.reduce((sum, match) => {
-      if (location === 'home' && match.homeTeamId === teamId) {
-        return sum + match.awayTeamGoals;
-      }
-      if (location === 'away' && match.awayTeamId === teamId) {
-        return sum + match.homeTeamGoals;
+      switch (location) {
+        case 'home':
+          if (match.homeTeamId === teamId) {
+            return sum + match.awayTeamGoals;
+          }
+          break;
+        case 'away':
+          if (match.awayTeamId === teamId) {
+            return sum + match.homeTeamGoals;
+          }
+          break;
+        default:
+          return sum + match.awayTeamGoals + match.homeTeamGoals;
       }
       return sum;
     }, 0);
@@ -74,46 +135,34 @@ export default class LeaderboardUtils {
     return efficiency;
   }
 
-  // eslint-disable-next-line max-lines-per-function
   public static calculateTeamSummary(teamName: string, id: number, matches: IMatchesWithName[], location: Location): ILeaderboardHome {
-    const games = LeaderboardUtils.calcGames(id, matches, location);
-
-    const { totalGames, totalVictories, totalDraws, totalLosses } = games;
+    const { totalVictories, totalDraws, totalLosses } = LeaderboardUtils.calcGamesResults(id, matches, location);
     const { totalPoints } = LeaderboardUtils.calcTotalPoints(totalVictories, totalDraws);
+
     const goalsFavor = LeaderboardUtils.calcGoalsFavor(id, matches, location);
     const goalsOwn = LeaderboardUtils.calcGoalsOwn(id, matches, location);
-    const goalsBalance = LeaderboardUtils.calcGoalsBalance(goalsFavor, goalsOwn);
-    const efficiency = LeaderboardUtils.calcEfficiency(totalPoints, totalGames);
+    const totalGames = LeaderboardUtils.calcTotalMatches(id, matches, location);
 
     return {
       name: teamName,
       totalPoints,
-      totalGames,
+      totalGames: totalGames.length,
       totalVictories,
       totalDraws,
       totalLosses,
       goalsFavor,
       goalsOwn,
-      goalsBalance,
-      efficiency,
+      goalsBalance: LeaderboardUtils.calcGoalsBalance(goalsFavor, goalsOwn),
+      efficiency: LeaderboardUtils.calcEfficiency(totalPoints, totalGames.length),
     };
   }
 
-  public static sortedLeaderBoard(leaderboardData: ILeaderboardHome[]): ILeaderboardHome[] {
-    const orderedLeaderboard = leaderboardData.sort((a, b) => {
-      if (a.totalPoints > b.totalPoints) return -1;
-      if (a.totalPoints < b.totalPoints) return 1;
-      if (a.totalVictories > b.totalVictories) return -1;
-      if (a.totalVictories < b.totalVictories) return 1;
-      if (a.goalsBalance > b.goalsBalance) return -1;
-      if (a.goalsBalance < b.goalsBalance) return 1;
-      if (a.goalsFavor > b.goalsFavor) return -1;
-      if (a.goalsFavor < b.goalsFavor) return 1;
-      return a.name.localeCompare(b.name);
-    });
-
-    return orderedLeaderboard;
-  }
+  public static sortedLeaderBoard = (team: ILeaderboardHome[]): ILeaderboardHome[] => {
+    team.sort((a, b) => b.totalPoints - a.totalPoints
+      || b.goalsBalance - a.goalsBalance
+      || b.goalsFavor - a.goalsFavor);
+    return team;
+  };
 
   public static calcTeamBoard(
     matches: IMatchesWithName[],
