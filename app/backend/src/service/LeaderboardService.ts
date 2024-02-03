@@ -9,13 +9,25 @@ export default class LeaderboardService {
   private teamsModel = new TeamsModel();
   private matchesModel = new MatchesModel();
 
-  public async getLeaderboard(location: Location): Promise<ServiceResponse<ILeaderboardHome[]>> {
+  public async getLeaderboardHome():
+  Promise<ServiceResponse<ILeaderboardHome[]>> {
     const finishedMatches = await this.matchesModel
       .getAllMatchesInProgressOrNot('false') as IMatchesWithName[];
     const teamsData = await this.teamsModel.findAll();
 
     const leaderBoardHomeData = LeaderboardUtils
-      .calcTeamBoard(finishedMatches, teamsData, location);
+      .calcTeamBoard(finishedMatches, teamsData, 'home');
     return { status: 'SUCCESSFUL', data: leaderBoardHomeData };
+  }
+
+  public async getLeaderboardAway():
+  Promise<ServiceResponse<ILeaderboardHome[]>> {
+    const finishedMatches = await this.matchesModel
+      .getAllMatchesInProgressOrNot('false') as IMatchesWithName[];
+    const teamsData = await this.teamsModel.findAll();
+
+    const leaderBoardAwayData = LeaderboardUtils
+      .calcTeamBoard(finishedMatches, teamsData, 'away');
+    return { status: 'SUCCESSFUL', data: leaderBoardAwayData };
   }
 }
