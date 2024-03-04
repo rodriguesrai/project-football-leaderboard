@@ -9,7 +9,7 @@
 
  ![Exemplo app front](assets/front-example.png)
 
-<h2 id="technologies">💻 Technologies</h2>
+<h2 id="technologies">💻 Principais tecnologias</h2>
 
 - Docker
 - Sequelize
