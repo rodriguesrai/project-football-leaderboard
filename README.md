@@ -23,7 +23,7 @@
 - Sinon
 - Chai
 
-![Descrição da Imagem](https://drive.google.com/uc?export=download&id=18l5eVD8jw-qB9IZF0oMGoQ0frRyWrtNz)
+ ![Exemplo app front](assets/front-example.png)
 
 
 <h2 id="started">🚀 Getting started</h2>
