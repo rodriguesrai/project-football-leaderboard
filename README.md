@@ -1,10 +1,10 @@
 <h1 align="center" style="font-weight: bold;">Footbal Leaderboard</h1>
 
 <p align="center">
-    <b>O Footbal Leaderboard é um site informativo sobre partidas e classificações de futebol! ⚽️</b>
+    <b>O Footbal Leaderboard é uma API RESTful e site informativo sobre partidas e classificações de futebol! ⚽️</b>
 </p>
 <p align="center">
-    Nesse projeto, fiquei responsável por construir um back-end(utilizando o método TDD) dockerizado utilizando modelagem de dados através do Sequelize. O desenvolvimento respeitou regras de negócio providas no projeto e a API é ser capaz de ser consumida por um front-end já provido nesse projeto. 
+    Nesse projeto, fiquei responsável por construir um back-end(utilizando o método TDD) dockerizado utilizando modelagem de dados através do Sequelize. O desenvolvimento respeitou regras de negócio providas no projeto e a API RESTful é  capaz de ser consumida por um front-end já provido nesse projeto. 
 </p>
 
  ![Exemplo app front](assets/front-example.png)
