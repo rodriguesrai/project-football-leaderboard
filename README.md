@@ -7,6 +7,8 @@
     Nesse projeto, fiquei responsável por construir um back-end(utilizando o método TDD) dockerizado utilizando modelagem de dados através do Sequelize. O desenvolvimento deve respeitou regras de negócio providas no projeto e a API é ser capaz de ser consumida por um front-end já provido nesse projeto. 
 </p>
 
+ ![Exemplo app front](assets/front-example.png)
+
 <h2 id="technologies">💻 Technologies</h2>
 
 - Docker
@@ -22,9 +24,6 @@
 - Mocha
 - Sinon
 - Chai
-
- ![Exemplo app front](assets/front-example.png)
-
 
 <h2 id="started">🚀 Getting started</h2>
 
